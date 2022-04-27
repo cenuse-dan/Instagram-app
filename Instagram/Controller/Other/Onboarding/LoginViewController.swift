@@ -8,7 +8,10 @@ import SafariServices
 import UIKit
 
 class LoginViewController: UIViewController {
-    let db = SQLiteDatabase()
+  
+    static let shared = LoginViewController ()
+    var logat = false
+    
     struct Constants{
         static let cornerRadius: CGFloat = 8.0
     }
@@ -28,7 +31,7 @@ class LoginViewController: UIViewController {
         field.layer.backgroundColor = UIColor.secondaryLabel.cgColor
         return field
     }()
-    
+
     private let passwrodField: UITextField = {
         let field = UITextField()
         field.isSecureTextEntry=true
@@ -201,11 +204,42 @@ class LoginViewController: UIViewController {
             let password = passwrodField.text, !password.isEmpty, password.count >= 8 else {
             return
         }
+        var username: String?
+        var email: String?
+        if usernameEmail.contains("@"), usernameEmail.contains("."){
+            email=usernameEmail
+            
+        }
+        else{
+            username=usernameEmail
+        }
+        
+        //self.dismiss(animated: true,completion: nil)
+        
+        AuthManager.shared.loginUser(username: username,email: email, password: password) {succes in
+//        DispatchQueue.main.async {
+            if succes {
+                //user signed in
+                print("Ce bine merge functia")
+                self.dismiss(animated: true,completion: nil)
+            }
+            else {
+                //error
+                let alert=UIAlertController(title: "Log in Error",
+                                            message: "Not able to log in",
+                                            preferredStyle: .alert)
                 
-        //login functionality
-        
-        
+                alert.addAction(UIAlertAction(title: "Dismiss",
+                                              style: .cancel,
+                                              handler: nil))
+                self.present(alert,animated: true)
+                }
+            }
+//        }
     }
+        
+        
+    
     @objc private func didTapTermsButton(){
         guard let URL = URL(string: "https://help.instagram.com/581066165581870/?helpref=uf_share")else{
             return
@@ -224,7 +258,9 @@ class LoginViewController: UIViewController {
     }
     @objc private func didTapCreateAccoundButton(){
         let vc = RegistrationViewController()
-        present(vc,animated: true)
+        vc.title="Create Account"
+        
+        present(UINavigationController(rootViewController: vc),animated: true)
     }
     
 }

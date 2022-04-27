@@ -22,12 +22,12 @@ class HomeViewController: UIViewController {
     private func handleNotAuthenticated(){
         //Check auth status
     
-        
-            	
+        if (LoginViewController.shared.logat != true){
+            LoginViewController.shared.logat = true
             let loginVC=LoginViewController()
             loginVC.modalPresentationStyle = .fullScreen
             present(loginVC,animated: false)
-       // }
+        }
     
 
 }
