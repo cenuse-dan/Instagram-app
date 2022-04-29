@@ -12,35 +12,51 @@ public class AuthManager{
     
     public func registerNewUser(username:String, email: String, password: String){
                     // Insert in database
-        
-                    do {
+        db.self.canCreateNewUser(with: email, username: username){ canCreate in
+            
+            if canCreate{
+                Auth.auth().createUser(withEmail: email, password: password)
+                                           
+                do{
                       try
                         self.db.insertNewUser(username: username, email: email, password: password)
+                        
                     } catch {
                         print(self.db.errorMessage)
+                        
+                        return
                     }
-                    //self.db.insertNewUser(username: username, email: email, password: password)
+                  
                     
                         
-                    }
+                    
+        }
+            else{
+                return
+            }
+    }
+        }
+    
     
     
     public func loginUser(username: String?, email:String?, password:String, completion: @escaping (Bool)-> Void){
-        if let email = email {
-//            if (self.db.readlogemail(emaill: email, passwordl: password) != true){
-//                print("pizza")
-//                completion(false)
-//                return
-//            }
-//            completion(true)
-//            }
-            print("penus")}
+        if let email = email { //email log in
+            
+            Auth.auth().signIn(withEmail: email, password: password){authResult, error in
+                guard authResult != nil , error == nil else{
+                    completion(false)
+                    return
+                }
+                
+                completion(true)
+            }
+        }
         
         
         else if let username = username {
             if(self.db.readloguser(usernamel:username, passwordl: password) != true){
-                print("ce imi bag pula ",self.db.readloguserwhere(usernamel:username, passwordl: password))
-                print("pizza")
+                self.db.read()
+                
 
                 completion(false)
                 return
@@ -48,5 +64,27 @@ public class AuthManager{
         completion(true)
         }
     }
+    /// Attempt to log out firebase user
+    public func logOut(completion: (Bool)->Void){
+        do {
+            try Auth.auth().signOut()
+            completion(true)
+            return
+        }
+        catch{
+            
+            print(error)
+            completion(false)
+            return
+        }
+    }
 }
+
+
+
+
+
+
+
+
 

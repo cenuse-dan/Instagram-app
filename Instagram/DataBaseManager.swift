@@ -25,6 +25,7 @@ class SQLiteDatabase {
        var path : String = "instaDataBase.sqlite"
        init() {
            self.db = createDB()
+           self.createTable()
              
 
 
@@ -47,7 +48,7 @@ class SQLiteDatabase {
                print("There is error in creating DB")
                return nil
            }else {
-               //print("Database has been created with path \(path) \(filePath)")
+              // print("Database has been created with path \(path) \(filePath)")
                return db
            }
        }
@@ -58,7 +59,7 @@ class SQLiteDatabase {
           
           if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
               if sqlite3_step(statement) == SQLITE_DONE {
-                  print("Table creation success")
+                  //print("Table creation success")
               }else {
                   print("Table creation fail")
               } 
@@ -80,6 +81,7 @@ class SQLiteDatabase {
         
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
+            //sqlite3_bind_int(statement, 1, 1)
             sqlite3_bind_text(statement, 1, (username as NSString).utf8String, -1,nil)
             sqlite3_bind_text(statement, 2, (email as NSString).utf8String, -1,nil)
             sqlite3_bind_text(statement, 3, (password as NSString).utf8String, -1,nil)
@@ -88,7 +90,8 @@ class SQLiteDatabase {
               throw SQLiteError.Step(message: errorMessage)
             }
             print("Successfully inserted row.")
-            read()
+           // read()
+            
         }
         else {
            print("Query is not as per requirement")
@@ -120,11 +123,11 @@ class SQLiteDatabase {
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
                 var username = "NULL"
-                let id = Int(sqlite3_column_int(statement, 0))
+           
                 if (sqlite3_column_text(statement, 1) != nil){
                 username = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 }
-                let email = String(describing: String(cString: sqlite3_column_text(statement, 2)))
+               
                 let password = String(describing: String(cString: sqlite3_column_text(statement, 3)))
 
                 if(username == usernamel && passwordl == password){
@@ -137,20 +140,20 @@ class SQLiteDatabase {
     
     func readloguserwhere (usernamel: String, passwordl:String) -> String{
         let querySql = "SELECT * FROM testusers WHERE username = ? AND password = ? ;"
-        var username = "NULL"
         var statement : OpaquePointer?
+        let username = "NULL"
        // print (usernamel)
         if sqlite3_prepare_v2(db, querySql, -1, &statement, nil) == SQLITE_OK{
             sqlite3_bind_text(statement, 1, (usernamel as NSString).utf8String, -1,nil)
             sqlite3_bind_text(statement, 2, (passwordl as NSString).utf8String, -1,nil)
             while sqlite3_step(statement) == SQLITE_ROW {
                 var username = "NULL"
-                let id = Int(sqlite3_column_int(statement, 0))
+               
                 if (sqlite3_column_text(statement, 1) != nil){
                 username = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                 }
-                let email = String(describing: String(cString: sqlite3_column_text(statement, 2)))
-                let password = String(describing: String(cString: sqlite3_column_text(statement, 3)))
+               
+                
                 print("\n",username,"\n")
                 
             }
@@ -162,11 +165,6 @@ class SQLiteDatabase {
         var test = false
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
-                var username = "NULL"
-                let id = Int(sqlite3_column_int(statement, 0))
-                if (sqlite3_column_text(statement, 1) != nil){
-                username = String(describing: String(cString: sqlite3_column_text(statement, 1)))
-                }
                 let email = String(describing: String(cString: sqlite3_column_text(statement, 2)))
                 let password = String(describing: String(cString: sqlite3_column_text(statement, 3)))
 
@@ -203,6 +201,6 @@ class SQLiteDatabase {
 
         }
     }
-
+    
 
 }

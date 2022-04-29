@@ -217,7 +217,7 @@ class LoginViewController: UIViewController {
         //self.dismiss(animated: true,completion: nil)
         
         AuthManager.shared.loginUser(username: username,email: email, password: password) {succes in
-//        DispatchQueue.main.async {
+        DispatchQueue.main.async {
             if succes {
                 //user signed in
                 print("Ce bine merge functia")
@@ -235,7 +235,7 @@ class LoginViewController: UIViewController {
                 self.present(alert,animated: true)
                 }
             }
-//        }
+        }
     }
         
         
