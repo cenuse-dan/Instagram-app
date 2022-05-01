@@ -12,10 +12,12 @@
         <scene sceneID="IVR-di-7Ia">
             <objects>
                 <tabBarController id="VRx-Xk-5To" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6X1-Y0-Fqh">
+                    <tabBar key="tabBar" clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6X1-Y0-Fqh">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" systemColor="secondarySystemFillColor"/>
+                        <color key="backgroundColor" systemColor="secondarySystemFillColor"/>
+                        <color key="tintColor" systemColor="systemGray5Color"/>
+                        <color key="barTintColor" systemColor="secondarySystemGroupedBackgroundColor"/>
                         <color key="selectedImageTintColor" systemColor="secondaryLabelColor"/>
                     </tabBar>
                     <connections>
@@ -33,12 +35,16 @@
         <!--Navigation Controller-->
         <scene sceneID="Few-do-8mi">
             <objects>
-                <navigationController id="lOz-Eg-zeK" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="lOz-Eg-zeK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="heart" catalog="system" id="tBZ-A9-RuJ"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pl1-Tg-PU9">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="lPl-dk-F7g">
+                        <rect key="frame" x="0.0" y="764" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="hvo-jH-Lwn" kind="relationship" relationship="rootViewController" id="xRT-ml-ftn"/>
                     </connections>
@@ -208,8 +214,14 @@
         <systemColor name="secondarySystemFillColor">
             <color red="0.47058823529411764" green="0.47058823529411764" blue="0.50196078431372548" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
+        <systemColor name="secondarySystemGroupedBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

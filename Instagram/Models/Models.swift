@@ -18,6 +18,8 @@ struct User{
     let gender: Gender
     let counds: UserCount
     let joinDate: Date
+    let profilePhoto: URL
+   
 }
 
 struct UserCount{
@@ -25,8 +27,9 @@ struct UserCount{
     let following: Int
     let posts: Int
 }
-public enum UserPostType{
-    case photo, video
+public enum UserPostType: String{
+    case photo = "Photo"
+    case video = "Video"
 }
 
 /// Represents a user post
@@ -37,10 +40,11 @@ public struct UserPost {
     let thumbnailImage: URL
     let postURL: URL  // video or URL or full res photo
     let caption: String?
-    let likeCount: Int
+    let likeCount: [PostLike]
     let comments: [PostComment]
     let createdDate: Date
     let taggedUsers: [String]
+    let owner: User
 }
 
 struct PostLike{
@@ -55,7 +59,7 @@ struct CommentLike{
 
 struct PostComment{
     let identifier: String
-    let ssername: String
+    let username: String
     let text: String
     let createdDate: Date
     let likes: [CommentLike]

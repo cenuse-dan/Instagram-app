@@ -18,7 +18,6 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Profile"
         view.backgroundColor = .systemBackground
         configureNaivationBar()
         
@@ -108,7 +107,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         collectionView.deselectItem(at: indexPath, animated: true)
         
         // get the model and open post controoler
-       // let model = userPosts[indexPath.row]
+        //let model = userPosts[indexPath.row]
         let vc = PostViewController(model: nil)
         vc.title = "Post"
         vc.navigationItem.largeTitleDisplayMode = .never
@@ -159,14 +158,22 @@ extension ProfileViewController: ProfileInfoHeaderCollectionReusableViewDelegate
     }
     
     func profileHeaderDidTapFollowersButton(_ header: ProfileInfoHeaderCollectionReusableView) {
-        let vc = ListViewController(data: ["Joe","Joe","Joe","Joe"])
+        var mockData=[UserRelationship]()
+        for x in 0..<10 {
+            mockData.append(UserRelationship(username: "@Joe", name: "Joe Smith", type: x%2 == 0 ? .following: .not_following))
+        }
+        let vc = ListViewController(data: mockData)
         vc.title = "Followers"
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
     
     func profileHeaderDidTapFollowingButton(_ header: ProfileInfoHeaderCollectionReusableView) {
-        let vc = ListViewController(data: ["Joe","Joe","Joe","Joe"])
+        var mockData=[UserRelationship]()
+        for x in 0..<10 {
+            mockData.append(UserRelationship(username: "@Joe", name: "Joe Smith", type: x%2 == 0 ? .following: .not_following))
+        }
+        let vc = ListViewController(data: mockData)
         vc.title = "Following"
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
