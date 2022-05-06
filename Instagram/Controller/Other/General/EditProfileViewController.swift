@@ -176,11 +176,11 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
         let actionSheet = UIAlertController(title: "Profile Picture", message: "Change Profile Picture", preferredStyle: .actionSheet)
         
         actionSheet.addAction(UIAlertAction(title: "Choose from Gallery", style: .default, handler: {_ in
-            let picker = UIImagePickerController()
-            picker.sourceType = .photoLibrary
-            picker.delegate = self
-            picker.allowsEditing = true
-            self.present(picker,animated: true)
+            let picker2 = UIImagePickerController()
+            picker2.sourceType = .photoLibrary
+            picker2.delegate = self
+            picker2.allowsEditing = true
+            self.present(picker2,animated: true)
         }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         
@@ -189,15 +189,15 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
         present(actionSheet, animated: true)
         //SQLiteDatabase().updatePhoto(url: "https://elasq.com/wp-content/uploads/2021/09/car-18.png")
     }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]){
-        picker.dismiss(animated: true,completion: nil)
+    func imagePickerController(_ picker2: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]){
+        picker2.dismiss(animated: true,completion: nil)
         guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
             return
         }
         guard let imageData = image.pngData() else {
             return
         }
-        let ref = storage.child("images/photo.png")
+        let ref = storage.child("profileimages/photo.png")
         ref.putData(imageData, metadata: nil, completion: {_,error in
             guard  error == nil else {
                 print("Failed to upload ")
@@ -222,8 +222,8 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource, 
         })
     
     }
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController){
-        picker.dismiss(animated: true,completion: nil)
+    func imagePickerControllerDidCancel(_ picker2: UIImagePickerController){
+        picker2.dismiss(animated: true,completion: nil)
     }
 
 }
@@ -241,7 +241,7 @@ extension EditProfileViewController: FormTableViewCellDelegate {
             SQLiteDatabase().updateBio(bio:updatedModel.value!)
         }
         if(updatedModel.label == "Email"){
-          
+            SQLiteDatabase().updateEmail(newEmail: updatedModel.value!)
             AuthManager.shared.changeEmail(emailc: updatedModel.value!)
         }
         if (updatedModel.label == "Gender"){

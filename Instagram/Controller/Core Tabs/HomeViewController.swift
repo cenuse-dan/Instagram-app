@@ -35,33 +35,20 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+   
+        
         createMackModels()
+        tableView.reloadData()
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+//        /SQLiteDatabase().printAllUsers()
  
 
     }
     private func createMackModels() {
-        // use user from databse
-        let user = User(username: "Joe",
-                        bio: "",
-                        name: "",
-                        birthDate: "",
-                        gender: "male",
-                        profilePhoto: URL(string:"https://static.vecteezy.com/system/resources/previews/001/193/929/large_2x/vintage-car-png.png")!)
-        // use post from database
-        let post = UserPost(identifier: "",
-                            postType: .photo,
-                            thumbnailImage: URL(string: "https://thumbnail.imgbin.com/19/20/16/imgbin-url-shortening-ly-internet-web-page-hyperlink-others-2EApVhpuS0pBdEMT27wTR2La7_t.jpg")!,
-                            postURL: URL(string: "https://iso.500px.com/wp-content/uploads/2016/03/stock-photo-142984111.jpg")!,
-                            caption: nil,
-                            likeCount: [],
-                            comments: [],
-                            createdDate: Date(),
-                            taggedUsers: [],
-                            owner: user)
-        // use comments from database
+        
+        feedRenderModels.removeAll()
         var comments = [PostComment]()
         for x in 0...2{
             comments.append(PostComment(identifier: "\(x)",
@@ -72,13 +59,16 @@ class HomeViewController: UIViewController {
             
         }
         //Retruneaza un count
-        
-        for _ in 0...1 {
-            let viewModel = HomeFeedRenderViewModel(header: PostRenderViewModel(renderType: .header(provider: user)),
+        var userPosts = [UserPost]()
+        userPosts = SQLiteDatabase().returnFeedPosts()
+        for post in userPosts{
+            let viewModel = HomeFeedRenderViewModel(header: PostRenderViewModel(renderType: .header(provider:post.owner)),
                                                     post: PostRenderViewModel(renderType: .primaryContent(provide: post)),
                                                     actions: PostRenderViewModel(renderType: .actions(provider: "")),
                                                     comments: PostRenderViewModel(renderType: .comments(comments: comments)))
             feedRenderModels.append(viewModel)
+            
+            
         }
     }
     override func viewDidLayoutSubviews() {
@@ -88,11 +78,17 @@ class HomeViewController: UIViewController {
       
         
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("piza")
+        tableView.reloadData()
+    }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         handleNotAuthenticated()
+ 
        // let user = SQLiteDatabase().readtest()
         
         //print("am ajuns home",user.name)
@@ -269,5 +265,6 @@ extension HomeViewController: IGFeedPostHeaderTableViewCellDelegate {
     func reportPost(){
         
     }
+    
     }
     

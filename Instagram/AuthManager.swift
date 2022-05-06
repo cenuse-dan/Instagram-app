@@ -44,7 +44,7 @@ public class AuthManager{
     
     public func registerNewUser(username:String, email: String, password: String){
                     // Insert in database
-        db.self.printAllUsers()
+      //  db.self.printAllUsers()
         db.self.canCreateNewUser(with: email, username: username){ canCreate in
             
             if canCreate{
@@ -92,10 +92,10 @@ public class AuthManager{
     public func changeEmail(emailc: String) {
         let pass = SQLiteDatabase().returnpass()
         let email = Auth.auth().currentUser?.email
-        print(pass,email!)
+        //print(pass,email!)
         Auth.auth().signIn(withEmail: email!, password: pass)
         
-        Auth.auth().currentUser?.updateEmail(to: emailc) { error in
+        Auth.auth().currentUser?.updateEmail(to: emailc.lowercased()) { error in
                 //  var er = "erorr"
                   if let error = error{
                       //print(error)
@@ -109,7 +109,7 @@ public class AuthManager{
                   }
                       else{
                           print(error.localizedDescription)
-                       
+                       	
                       }
 
                   }

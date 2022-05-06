@@ -27,7 +27,8 @@ class SQLiteDatabase {
        var path : String = "instaDataBase.sqlite"
        init() {
            self.db = createDB()
-           //self.createTable()
+           self.createTableUser()
+           self.createTablePost()
            
              
 
@@ -44,12 +45,14 @@ class SQLiteDatabase {
     }
 
        func createDB() -> OpaquePointer? {
-           //let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
+           let filePath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathExtension(path)
            
            var db : OpaquePointer? = nil
-           
+           let path = "/Users/user216341/Desktop/Instagram/Baza de date/instaDataBase.sqlite"
            //if sqlite3_open(filePath.path, &db) != SQLITE_OK {
-            if sqlite3_open("/Users/user216341/Desktop/Baza de date/instaDataBase.sqlite", &db) != SQLITE_OK {
+            if sqlite3_open(path, &db) != SQLITE_OK {
+                    
+                
                print("There is error in creating DB")
                return nil
            }else {
@@ -58,8 +61,9 @@ class SQLiteDatabase {
            }
        }
     
-    func createTable()  {
-          let query = "CREATE TABLE IF NOT EXISTS testusers(id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT, email TEXT, password TEXT);"
+    func createTableUser()  {
+      
+        let query = "CREATE TABLE IF NOT EXISTS UsersInsta (Id    INTEGER,username    TEXT,bio    TEXT,name    TEXT,birthDate    TEXT,gender    TEXT,profilePhoto    TEXT,email    TEXT NOT NULL,password    TEXT,PRIMARY KEY(Id AUTOINCREMENT));"
           var statement : OpaquePointer? = nil
           
           if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
@@ -72,11 +76,26 @@ class SQLiteDatabase {
               print("Prepration fail")
           }
       }
+    func createTablePost()  {
+      
+        let query = "CREATE TABLE IF NOT EXISTS Userpost (idPost    INTEGER,type    TEXT NOT NULL DEFAULT 'photo',iduser    INTEGER NOT NULL,image    TEXT NOT NULL DEFAULT 'www.google.com',thumbnail    TEXT NOT NULL DEFAULT 'www.google.com',FOREIGN KEY(iduser) REFERENCES UsersInsta(Id),PRIMARY KEY(idPost AUTOINCREMENT));"
+          var statement : OpaquePointer? = nil
+          
+          if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
+              if sqlite3_step(statement) == SQLITE_DONE {
+                  //print("Table creation success")
+              }else {
+                  print("Table creation fail")
+              }
+          } else {
+              print("Prepration fail")
+          }
+      }
     func returnpass() ->String {
         let email = AuthManager.shared.curruser()
         let query = "SELECT * FROM UsersInsta WHERE email= '" + email + "' ;"
         var statement : OpaquePointer?
-        var pass = "fgdfg"
+        var pass = ""
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
             while sqlite3_step(statement) == SQLITE_ROW {
                 pass = String(describing: String(cString: sqlite3_column_text(statement, 8)))
@@ -89,6 +108,7 @@ class SQLiteDatabase {
     }
     func returnId() ->Int {
         let email = AuthManager.shared.curruser()
+        print(email)
         let query = "SELECT * FROM UsersInsta WHERE email= '" + email + "' ;"
         var statement : OpaquePointer?
         var id = 4
@@ -175,9 +195,27 @@ class SQLiteDatabase {
       else{
           print("Prepration fail")
       }
-        print(email)
+       // print(email)
         return email
     }
+    public func returnEmail(id:Int) ->String {
+     
+        let query = "SELECT * FROM UsersInsta WHERE id = \(id) ;"
+        var statement : OpaquePointer?
+        var email = ""
+        if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+            while sqlite3_step(statement) == SQLITE_ROW {
+                email = String(describing: String(cString: sqlite3_column_text(statement, 7)))
+            }
+        }
+      else{
+          print("Prepration fail")
+      }
+      //  print(email)
+        return email
+    }
+    
+    
     
     public func insertNewUser (username: String, email: String, password: String) throws{
         let query = "INSERT INTO UsersInsta (username,email,password) VALUES (?, ?, ?)"
@@ -206,14 +244,28 @@ class SQLiteDatabase {
           if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
               while sqlite3_step(statement) == SQLITE_ROW {
                   var username = "NULL"
+                  var bio = "NULL"
+                  var name = "NULL"
+                  var email = "NULL"
+                  var pass = "NULL"
+                  
                   let id = Int(sqlite3_column_int(statement, 0))
                   if (sqlite3_column_text(statement, 1) != nil){
                   username = String(describing: String(cString: sqlite3_column_text(statement, 1)))
                   }
-                  let email = String(describing: String(cString: sqlite3_column_text(statement, 2)))
-                  let password = String(describing: String(cString: sqlite3_column_text(statement, 3)))
-
-                //print("\n",id,username,email,password,"\n")
+                  if (sqlite3_column_text(statement, 2) != nil){
+                  bio = String(describing: String(cString: sqlite3_column_text(statement, 2)))
+                  }
+                  if (sqlite3_column_text(statement, 3) != nil){
+                   name = String(describing: String(cString: sqlite3_column_text(statement, 3)))
+                  }
+                  if (sqlite3_column_text(statement, 7) != nil){
+                   email = String(describing: String(cString: sqlite3_column_text(statement, 7)))
+                  }
+                  if (sqlite3_column_text(statement, 8) != nil){
+                   pass = String(describing: String(cString: sqlite3_column_text(statement, 8)))
+                  }
+                print("\n",id,username,bio,name,email,pass,"\n")
               }
           }
 
@@ -248,10 +300,92 @@ class SQLiteDatabase {
         }
         return userPosts
     }
+    
+    func returnOwner(id:Int) ->User
+    {
+            //Aici pica
+          let email = id
+          var user = User(username: "", bio: "", name: "", birthDate: "", gender: "", profilePhoto: URL(string: "www.google.com")!)
+          let query = "SELECT * FROM UsersInsta WHERE id= \(id);"
+          var statement : OpaquePointer?
+          var bio = ""
+          var name = ""
+          var birthdate = ""
+          var gender = ""
+          var photo = ""
+          if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+              while sqlite3_step(statement) == SQLITE_ROW {
+                  
+                  let username = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                  if sqlite3_column_text(statement, 2) != nil {
+                      bio =  String(describing: String(cString: sqlite3_column_text(statement, 2)))
+                      
+                  }
+                  if sqlite3_column_text(statement, 3) != nil {
+                      name = String(describing: String(cString: sqlite3_column_text(statement, 3)))
+                      
+                  }
+                  if sqlite3_column_text(statement, 4) != nil {
+                      birthdate = String(describing: String(cString: sqlite3_column_text(statement, 4)))
+                      
+                  }
+                  if sqlite3_column_text(statement, 5) != nil {
+                      gender = String(describing: String(cString: sqlite3_column_text(statement, 5)))
+                      
+                  }
+                  if sqlite3_column_text(statement, 6) != nil {
+                      photo = String(describing: String(cString: sqlite3_column_text(statement, 6)))
+                      
+                  }
+                  if photo == ""{
+                      photo = "www.google.com"
+                  }
+                  let photoURL = URL(string: photo)
+                  
+                  user = User(username: username, bio: bio, name: name, birthDate: birthdate, gender: gender, profilePhoto: photoURL!)
+               // print("\n",id,username,bio,name,birthdate,gender,photo,"\n")
+             
+              }
+          }
+        else{
+            print("Prepration fail")
+        }
+         //print (user)
+         return user
+      }
+    
+    func returnFeedPosts() ->[UserPost]{
+  
+        let query = "SELECT * from Userpost ;"
+        var userPosts = [UserPost]()
+     //   let user = self.returnOwner(id: <#T##Int#>)
+       // print(user)
+        var statement : OpaquePointer?
+        if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK{
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let id = Int(sqlite3_column_int(statement, 0))
+                let type = String(describing: String(cString: sqlite3_column_text(statement, 1)))
+                let iduser = Int(sqlite3_column_int(statement, 2))
+                let photo = String(describing: String(cString: sqlite3_column_text(statement, 3)))
+                let thumbnail = String(describing: String(cString: sqlite3_column_text(statement, 4)))
+               // print (type,iduser,photo,thumbnail)
+                if type == "photo"{
+                    let user = self.returnOwner(id: iduser)
+                    userPosts.append(UserPost(identifier: ("post \(id)"), postType: .photo, thumbnailImage: URL(string: thumbnail)!, postURL: URL(string: photo)!, caption: "nu ma intereseaza", likeCount: [], comments: [], createdDate: Date(), taggedUsers: [], owner: user))
+                }
+                else{
+                    let user = self.returnOwner(id: iduser)
+                    userPosts.append(UserPost(identifier: ("post \(id)"), postType: .video, thumbnailImage: URL(string: thumbnail)!, postURL: URL(string: photo)!, caption: "nu ma intereseaza", likeCount: [], comments: [], createdDate: Date(), taggedUsers: [], owner: user))
+                }
+        
+            }
+        }
+        return userPosts
+    }
     func insertphoto(url :String){
         let email = AuthManager.shared.curruser()
         let id = returnId()
-        print(email,id)
+        //print(email,id)
         let query = "INSERT INTO Userpost (iduser, image, thumbnail) VALUES (\(id), '\(url)', '\(url)');"
         var statement : OpaquePointer? = nil
         if sqlite3_prepare_v2(self.db, query, -1, &statement, nil) == SQLITE_OK {
@@ -265,6 +399,7 @@ class SQLiteDatabase {
         }
         else {
            print("Query is not as per requirement")
+            print(errorMessage)
         }
     }
     
@@ -351,8 +486,30 @@ class SQLiteDatabase {
           }
           
         }
+    func updateEmail(newEmail: String ){
+       // let updateStatementString = "UPDATE UsersInsta set name = '" + name + "' where id = 1"
+        let email = AuthManager.shared.curruser()
+        print(email,newEmail)
+        print(newEmail.lowercased())
+
+        let updateStatementString = "UPDATE UsersInsta set email = '" + newEmail.lowercased() + "' where lower(email) = '" + email + "';"
+        //print(updateStatementString)
+          var updateStatement: OpaquePointer?
+          if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) ==
+              SQLITE_OK {
+            if sqlite3_step(updateStatement) == SQLITE_DONE {
+              print("\nSuccessfully updated row.")
+            } else {
+              print("\nCould not update row.")
+            }
+          } else {
+            print("\nUPDATE statement is not prepared")
+          }
+
+        }
     func updateBio(bio: String ){
         let email = AuthManager.shared.curruser()
+        //print(email)
         let updateStatementString = "UPDATE UsersInsta set bio = '" + bio + "' where email = '" + email + "';"
           var updateStatement: OpaquePointer?
         
@@ -379,6 +536,7 @@ class SQLiteDatabase {
           }
           
         }
+    
     
     func updateGender(gender: String ){
         let email = AuthManager.shared.curruser()

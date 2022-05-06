@@ -45,12 +45,6 @@ final class SettingsViewController: UIViewController {
         data.append([
             SettingCellModel(title: "Edit Profile") { [weak self] in
                 self?.didTapEditProfile()
-            },
-            SettingCellModel(title: "Invite Friends") { [weak self] in
-                self?.didTapInviteFriends()
-            },
-            SettingCellModel(title: "Save Original Posts") { [weak self] in
-                self?.didTapSaveOriginalPosts()
             }
         ])
         
@@ -73,7 +67,8 @@ final class SettingsViewController: UIViewController {
         data.append([
             SettingCellModel(title: "Log Out") { [weak self] in
                 self?.didTapLogOut()
-            }
+            },
+            
         ])
     }
     

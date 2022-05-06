@@ -19,7 +19,9 @@ final class ProfileViewController: UIViewController {
     func createposts() {
         collectionView?.reloadData()
         let user = db.returnTheCurrentUser()
-        print(user)
+        //print(user)
+        
+        //db.printAllUsers()
 //        for _ in 0...5 {
 //            userPosts.append(UserPost(identifier: "",
 //                                      postType: .photo,
@@ -38,7 +40,9 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //retuser()
+        db.self.printAllUsers()
         collectionView?.reloadData()
+       // print(AuthManager.shared.curruser())
         //db.postcount()
        // db.countuser()
         view.backgroundColor = .systemBackground
@@ -86,7 +90,7 @@ final class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
 
         collectionView?.reloadData() ///// ASTA !!!!!!!!!!!!!!!!!!!!!!
-       print("test")
+       //print("test")
         createposts()
         
         
