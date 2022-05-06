@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import FirebaseStorage
 
 struct EditProfileFormModel{
     let label: String
@@ -14,10 +14,10 @@ struct EditProfileFormModel{
     var value: String?
 }
 
-final class EditProfileViewController: UIViewController, UITableViewDataSource {
+final class EditProfileViewController: UIViewController, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
+    let storage = Storage.storage().reference()
 
-    
-    
+  
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(FormTableViewCell.self,
@@ -45,9 +45,25 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
                                                             style: .plain,
                                                             target: self ,
                                                             action: #selector(didTapCancel))
+     
+        
     }
+    private let SaveButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Save", for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.backgroundColor = .secondarySystemBackground
+        return button
+    }()
     
-    
+    private let CancelButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Cancel", for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.backgroundColor = .secondarySystemBackground
+        return button
+    }()
+   
     private func configureModels(){
         //name, username, website, bio
         let section1Labels = ["Name","Username","Bio"]
@@ -62,10 +78,9 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
         models.append(section1)
         
         //email, phone, gender
-        let section2Labels = ["Email","Phone","Gender"]
+        let section2Labels = ["Email","Gender"]
         var section2 = [EditProfileFormModel]()
-        for label in section2Labels {
-            let model = EditProfileFormModel(label: label,
+        for label in section2Labels {            let model = EditProfileFormModel(label: label,
                                              placeholder:"Enter \(label)...",
                                              value: nil)
             section2.append(model)
@@ -92,10 +107,12 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
         profilePhotoButton.layer.masksToBounds = true
         profilePhotoButton.layer.cornerRadius = size/2.0
         profilePhotoButton.tintColor = .label
-        profilePhotoButton.addTarget(self, action: #selector(didTapProfileButton), for: .touchUpInside)
+        profilePhotoButton.addTarget(self, action: #selector(didTapChangeProfilePicture), for: .touchUpInside)
         profilePhotoButton.setBackgroundImage(UIImage(systemName: "person.circle"), for: .normal)
         profilePhotoButton.layer.borderWidth = 1
         profilePhotoButton.layer.borderColor = UIColor.secondarySystemBackground.cgColor
+        SaveButton.frame = CGRect (x: header.width-size/2, y: (header.height-size)/2, width: size/2, height: size/4)
+        CancelButton.frame = CGRect (x: 0, y: (header.height-size)/2, width: size/2, height: size/4)
         
         return header
         
@@ -124,6 +141,7 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
                                                  for: indexPath) as! FormTableViewCell
         cell.configure(with: model)
         cell.delegate = self
+        
         return cell
     }
     
@@ -131,10 +149,20 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
     
         //Mark: - Action
     
-    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ProfileViewController().viewDidLoad()
+    }
     @objc private func didTapSave(){
         //save info to database
         dismiss(animated: true,completion: nil)
+        let vc = ProfileViewController()
+        present(vc, animated: false)
+       // print("si asta e save")
+        ProfileViewController().viewDidLoad()
+        ProfileViewController().viewDidAppear(true)
+        ProfileViewController().viewDidDisappear(true)
+        self.viewDidDisappear(true)
         
     }
     @objc private func didTapCancel(){
@@ -144,30 +172,85 @@ final class EditProfileViewController: UIViewController, UITableViewDataSource {
         
     }
     
-    @objc private func didTapChangeProfilePicture(){
+    @objc public func didTapChangeProfilePicture()  {
         let actionSheet = UIAlertController(title: "Profile Picture", message: "Change Profile Picture", preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "Take Photo", style: .default, handler: {_ in
-            
-        }))
+        
         actionSheet.addAction(UIAlertAction(title: "Choose from Gallery", style: .default, handler: {_ in
-            
+            let picker = UIImagePickerController()
+            picker.sourceType = .photoLibrary
+            picker.delegate = self
+            picker.allowsEditing = true
+            self.present(picker,animated: true)
         }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         
         actionSheet.popoverPresentationController?.sourceView = view
         actionSheet.popoverPresentationController?.sourceRect = view.bounds
         present(actionSheet, animated: true)
+        //SQLiteDatabase().updatePhoto(url: "https://elasq.com/wp-content/uploads/2021/09/car-18.png")
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]){
+        picker.dismiss(animated: true,completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
+            return
+        }
+        guard let imageData = image.pngData() else {
+            return
+        }
+        let ref = storage.child("images/photo.png")
+        ref.putData(imageData, metadata: nil, completion: {_,error in
+            guard  error == nil else {
+                print("Failed to upload ")
+                print(error)
+                return
+            }
+            ref.downloadURL(completion: {url, error in
+                guard let url = url, error == nil else {
+                    print(error)
+                    return
+                }
+                let urlString = url.absoluteString
+                DispatchQueue.main.async {
+                    //self.nameLabel.text = urlString
+                  
+                    SQLiteDatabase().updatePhoto(url: urlString)
+                }
+                
+                //print("Download URL: \(urlString)")
+                UserDefaults.standard.set(urlString, forKey: "url")
+            })
+        })
+    
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController){
+        picker.dismiss(animated: true,completion: nil)
     }
 
-
 }
+
 
 extension EditProfileViewController: FormTableViewCellDelegate {
     func formTableViewCell(cell: FormTableViewCell, didUpdateField updatedModel: EditProfileFormModel) {
         // Update the model
-       
-        print(updatedModel.value ?? "nil")
+    
+        if (updatedModel.label == "Name"){
+            SQLiteDatabase().updateName(name:updatedModel.value!)
+            print(SQLiteDatabase().returnpass())
+        }
+        if (updatedModel.label == "Bio"){
+            SQLiteDatabase().updateBio(bio:updatedModel.value!)
+        }
+        if(updatedModel.label == "Email"){
+          
+            AuthManager.shared.changeEmail(emailc: updatedModel.value!)
+        }
+        if (updatedModel.label == "Gender"){
+            SQLiteDatabase().updateGender(gender:updatedModel.value!)
+            
+        }
+            
     }
     
-    
 }
+
+

@@ -13,7 +13,7 @@ class IGFeedPostGeneralTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        //contentView.backgroundColor = .systemOrange
+       
         contentView.addSubview(commentLabel)
 
     }
@@ -32,7 +32,7 @@ class IGFeedPostGeneralTableViewCell: UITableViewCell {
     
     public func configure(with model: PostComment){
         commentLabel.text = model.text
-        commentLabel.text = "O ce nice"
+       // commentLabel.text = "O ce nice"
      
 
     }

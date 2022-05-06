@@ -75,6 +75,7 @@ class RegistrationViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        SQLiteDatabase().printAllUsers()
         super.viewDidLoad()
         registerButton.addTarget(self,
                                  action: #selector(didTapRegister),

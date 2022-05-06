@@ -62,9 +62,10 @@ class IGFeedPostHeaderTableViewCell: UITableViewCell {
     
     public func configure(with model: User){
         // configure the cell
+        //usernameLabel.text = "PIZAA"
         usernameLabel.text = model.username
-        //profielPhotoImageView.sd_setImage(with: model.profilePhoto,completed: nil)
-        profielPhotoImageView.image = UIImage(systemName: "person.circle")
+        profielPhotoImageView.sd_setImage(with: model.profilePhoto,completed: nil)
+        //profielPhotoImageView.image = UIImage(systemName: "person.circle")
     }
     
     override func layoutSubviews() {

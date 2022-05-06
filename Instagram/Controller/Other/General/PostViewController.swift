@@ -53,9 +53,10 @@ class PostViewController: UIViewController {
     
     private func configureModels(){
         guard let userPostModel = self.model else {
-            
+            //print("MERGE ?")
             return
         }
+        //print(userPostModel)
         renderModels.append(PostRenderViewModel(renderType: .header(provider: userPostModel.owner)))
         renderModels.append(PostRenderViewModel(renderType: .primaryContent(provide: userPostModel)))
         renderModels.append(PostRenderViewModel(renderType: .actions(provider: "")))
@@ -102,7 +103,7 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let model = renderModels[indexPath.section]
-        
+    
         switch model.renderType{
         case .actions(let actions):
             let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostActionsTableViewCell.identifier,
@@ -112,11 +113,13 @@ extension PostViewController: UITableViewDelegate, UITableViewDataSource {
         case .comments(let commets):
             let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostGeneralTableViewCell.identifier,
                                                                              for: indexPath) as! IGFeedPostGeneralTableViewCell
+            cell.configure(with: commets[0])
             return cell
             
         case .primaryContent(let post):
             let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostTableViewCell.identifier,
                                                                                  for: indexPath) as! IGFeedPostTableViewCell
+            cell.configure(with: post)
             return cell
             
         case .header(let user):

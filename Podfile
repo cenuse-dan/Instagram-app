@@ -20,7 +20,9 @@ pod 'Firebase/Storage'
 
 pod 'SQLite.swift'
 
+#YouTube
 
+pod 'youtube-ios-player-helper',  '~> 1.0.4'
 
   # Pods for Instagram
 

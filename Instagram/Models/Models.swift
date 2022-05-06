@@ -6,18 +6,14 @@
 //
 
 import Foundation
-enum Gender{
-    case male, female, other
-}
+
 
 struct User{
     let username: String
     let bio: String
-    let name: (first: String, last: String)
-    let birthDate: Date
-    let gender: Gender
-    let counds: UserCount
-    let joinDate: Date
+    let name: String
+    let birthDate: String
+    let gender: String
     let profilePhoto: URL
    
 }

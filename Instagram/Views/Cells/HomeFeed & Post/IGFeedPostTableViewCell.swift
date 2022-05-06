@@ -40,14 +40,17 @@ final class IGFeedPostTableViewCell: UITableViewCell {
     public func configure(with post: UserPost){
         // configure the cell
         
-        postImageView.image = UIImage(named: "test")
-        return
+      //  postImageView.image = UIImage(named: "test")
+        //return
         switch post.postType {
         case .photo:
             postImageView.sd_setImage(with: post.postURL, completed: nil)
             
         case .video:
-            player = AVPlayer (url: post.postURL)
+            
+            //player = AVPlayer (url: post.postURL)
+            print("video")
+            player = AVPlayer (url: URL(string: "https://youtu.be/UQvFnNSZ9HM")!)
             playerLayer.player = player
             playerLayer.player?.volume = 0
             playerLayer.player?.play()

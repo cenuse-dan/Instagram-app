@@ -16,7 +16,7 @@ class LoginViewController: UIViewController {
         static let cornerRadius: CGFloat = 8.0
     }
     
-    private let usernameEmailField: UITextField = {
+    public let usernameEmailField: UITextField = {
         let field = UITextField()
         field.placeholder = "Username or Email... "
         field.returnKeyType = .next
@@ -32,7 +32,7 @@ class LoginViewController: UIViewController {
         return field
     }()
 
-    private let passwrodField: UITextField = {
+    public let passwrodField: UITextField = {
         let field = UITextField()
         field.isSecureTextEntry=true
         field.placeholder = "Password... "
@@ -195,11 +195,11 @@ class LoginViewController: UIViewController {
         view.addSubview(headerView)
         
     }
-
+   
     @objc private func didTapLoginButton(){
         passwrodField.resignFirstResponder()
         usernameEmailField.resignFirstResponder()
-        
+         
         guard let usernameEmail = usernameEmailField.text, !usernameEmail.isEmpty,
             let password = passwrodField.text, !password.isEmpty, password.count >= 8 else {
             return

@@ -66,21 +66,18 @@ final class NotificationsViewController: UIViewController, UITableViewDelegate, 
        
     }
     let user1 = User(username: "Joe",
-                    bio: "",
-                    name: (first: "", last: ""),
-                    birthDate: Date(),
-                    gender: .male,
-                    counds: UserCount(followers: 1, following: 1, posts: 1),
-                    joinDate: Date(),
-                    profilePhoto: URL(string:"https://static.vecteezy.com/system/resources/previews/001/193/929/large_2x/vintage-car-png.png")!)
-    let user2 = User(username: "Rzv",
-                    bio: "",
-                    name: (first: "", last: ""),
-                    birthDate: Date(),
-                    gender: .male,
-                    counds: UserCount(followers: 1, following: 1, posts: 1),
-                    joinDate: Date(),
-                    profilePhoto: URL(string:"https://www.kindpng.com/picc/m/181-1813878_vector-car-png-file-vector-png-of-car.png")!)
+                     bio: "",
+                     name: "",
+                     birthDate: "",
+                     gender: "male",
+                     profilePhoto: URL(string:"https://static.vecteezy.com/system/resources/previews/001/193/929/large_2x/vintage-car-png.png")!)
+    let user2 = User(username: "RZV",
+        bio: "",
+        name: "",
+        birthDate: "",
+        gender: "male",
+        profilePhoto: URL(string:"https://www.kindpng.com/picc/m/181-1813878_vector-car-png-file-vector-png-of-car.png")!)
+    
     var users = [User]()
     
     
@@ -147,25 +144,25 @@ extension NotificationsViewController: NotificationLikeEventTableViewCellDelegat
     func didTapRelatedPostButton(model: UserNotifications) {
         let user = User(username: "JOe",
                         bio: "",
-                        name: (first: "", last: ""),
-                        birthDate: Date(),
-                        gender: .male,
-                        counds: UserCount(followers: 1, following: 1, posts: 1),
-                        joinDate: Date(),
+                        name: "",
+                        birthDate: "",
+                        gender: "",
+                     
                         profilePhoto: URL(string:"https://www.kindpng.com/picc/m/146-1467015_basic-url-web-address-web-urls-icon-png.png")!)
             switch model.type {
             case .like (let post):
             let vc = PostViewController(model: UserPost(identifier: "",
                                                         postType: .photo,
-                                                        thumbnailImage: URL(string: "www.google.com")!,
-                                                        postURL: URL(string: "www.google.com")!,
+                                                        thumbnailImage: URL(string: "https://iso.500px.com/wp-content/uploads/2016/03/stock-photo-142984111.jpg")!,
+                                                        postURL: URL(string: "https://iso.500px.com/wp-content/uploads/2016/03/stock-photo-142984111.jpg")!,
                                                         caption: nil,
                                                         likeCount: [],
                                                         comments: [],
                                                         createdDate: Date(),
                                                         taggedUsers: [],
                                                         owner: user))
-//            let vc = PostViewController(model:nil)
+           //let vc = PostViewController(model:nil)
+                
             vc.title =  post.postType.rawValue
             vc.navigationItem.largeTitleDisplayMode = .never
             navigationController?.pushViewController(vc, animated: true)

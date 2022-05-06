@@ -12,17 +12,23 @@ protocol ProfileInfoHeaderCollectionReusableViewDelegate: AnyObject{
     func profileHeaderDidTapFollowersButton(_ header: ProfileInfoHeaderCollectionReusableView)
     func profileHeaderDidTapFollowingButton(_ header: ProfileInfoHeaderCollectionReusableView)
     func profileHeaderDidTapEditProfileButton(_ header: ProfileInfoHeaderCollectionReusableView)
+   
 }
 
 final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
     
     static let identifier = "ProfileInfoHeaderCollectionReusableView"
+    static let shared = ProfileInfoHeaderCollectionReusableView()
+    var db = SQLiteDatabase()
+    var j = 0
     
     public weak var delegate: ProfileInfoHeaderCollectionReusableViewDelegate?
     
-    private let profilePhotoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.backgroundColor = .red
+    public var profilePhotoImageView: UIImageView = {
+  
+        var imageView = UIImageView()
+        imageView.image = UIImage(named: "test")
+        
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -51,23 +57,24 @@ final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         return button
     }()
     
-    private let editProfileButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Edit Your Profile", for: .normal)
-        button.setTitleColor(.label, for: .normal)
-        button.backgroundColor = .secondarySystemBackground
-        return button
-    }()
+//    private let editProfileButton: UIButton = {
+//        let button = UIButton()
+//        button.setTitle("Edit Your Profile", for: .normal)
+//        button.setTitleColor(.label, for: .normal)
+//        button.backgroundColor = .secondarySystemBackground
+//        return button
+//    }()
     
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Cenuse Vali"
+    public let nameLabel: UILabel = {
+       // let user = SQLiteDatabase().readtest()
+        var label = UILabel()
+        //label.text = user.name // De aici ea el numele orice ar fi
         label.textColor = .label
         label.numberOfLines = 1
         
         return label
     }()
-    private let bioLabel: UILabel = {
+    public let bioLabel: UILabel = {
         let label = UILabel()
         label.text = "Primu cont"
         label.textColor = .label
@@ -82,13 +89,17 @@ final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         addButtonActions()
         backgroundColor = .systemBackground
         clipsToBounds = true
+    
+  
+        //SQLiteDatabase().readtest()
+      
     }
     private func addSubviews() {
         addSubview(profilePhotoImageView)
         addSubview(followersButton)
         addSubview(followingButton)
         addSubview(postsButton)
-        addSubview(editProfileButton)
+       // addSubview(editProfileButton)
         addSubview(nameLabel)
         addSubview(bioLabel)
     }
@@ -100,9 +111,9 @@ final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         followingButton.addTarget(self,
                                   action: #selector(didTapFollowingButton),
                                   for: .touchUpInside)
-        editProfileButton.addTarget(self,
-                                  action: #selector(didTapEditProfileButton),
-                                  for: .touchUpInside)
+//        editProfileButton.addTarget(self,
+//                                  action: #selector(didTapEditProfileButton),
+//                                  for: .touchUpInside)
         postsButton.addTarget(self,
                                   action: #selector(didTapPostsButton),
                                   for: .touchUpInside)
@@ -124,26 +135,26 @@ final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         let countButtonWidth = (width-10-profilePhotoSize)/3
         
         postsButton.frame = CGRect(x: profilePhotoImageView.right,
-                                   y: 5,
+                                   y: profilePhotoSize/4,
                                    width: countButtonWidth,
                                    height: buttonHeight).integral
         
         followersButton.frame = CGRect(x: postsButton.right,
-                                       y: 5,
+                                       y: profilePhotoSize/4,
                                        width: countButtonWidth,
                                        height: buttonHeight).integral
         
         followingButton.frame = CGRect(x: followersButton.right,
-                                       y: 5,
+                                       y: profilePhotoSize/4,
                                        width: countButtonWidth,
                                        height: buttonHeight).integral
         profilePhotoImageView.layer.cornerRadius = profilePhotoSize/2.0
         
-        editProfileButton.frame = CGRect(x: profilePhotoImageView.right,
-                                         y: 5 + buttonHeight,
-                                         width: countButtonWidth*3,
-                                         height: buttonHeight).integral
-        
+//        editProfileButton.frame = CGRect(x: profilePhotoImageView.right,
+//                                         y: 5 + buttonHeight,
+//                                         width: countButtonWidth*3,
+//                                         height: buttonHeight).integral
+//
         nameLabel.frame = CGRect(x: 5,
                                  y: 5 + profilePhotoImageView.bottom,
                                  width: width-10,
@@ -172,4 +183,7 @@ final class ProfileInfoHeaderCollectionReusableView: UICollectionReusableView {
         delegate?.profileHeaderDidTopPostsButton(self)
     }
     
+    
 }
+
+

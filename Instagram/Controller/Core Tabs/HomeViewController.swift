@@ -43,24 +43,25 @@ class HomeViewController: UIViewController {
 
     }
     private func createMackModels() {
+        // use user from databse
         let user = User(username: "Joe",
                         bio: "",
-                        name: (first: "", last: ""),
-                        birthDate: Date(),
-                        gender: .male,
-                        counds: UserCount(followers: 1, following: 1, posts: 1),
-                        joinDate: Date(),
+                        name: "",
+                        birthDate: "",
+                        gender: "male",
                         profilePhoto: URL(string:"https://static.vecteezy.com/system/resources/previews/001/193/929/large_2x/vintage-car-png.png")!)
+        // use post from database
         let post = UserPost(identifier: "",
                             postType: .photo,
                             thumbnailImage: URL(string: "https://thumbnail.imgbin.com/19/20/16/imgbin-url-shortening-ly-internet-web-page-hyperlink-others-2EApVhpuS0pBdEMT27wTR2La7_t.jpg")!,
-                            postURL: URL(string: "www.google.com")!,
+                            postURL: URL(string: "https://iso.500px.com/wp-content/uploads/2016/03/stock-photo-142984111.jpg")!,
                             caption: nil,
                             likeCount: [],
                             comments: [],
                             createdDate: Date(),
                             taggedUsers: [],
                             owner: user)
+        // use comments from database
         var comments = [PostComment]()
         for x in 0...2{
             comments.append(PostComment(identifier: "\(x)",
@@ -70,7 +71,9 @@ class HomeViewController: UIViewController {
                                         likes: []))
             
         }
-        for x in 0...5 {
+        //Retruneaza un count
+        
+        for _ in 0...1 {
             let viewModel = HomeFeedRenderViewModel(header: PostRenderViewModel(renderType: .header(provider: user)),
                                                     post: PostRenderViewModel(renderType: .primaryContent(provide: post)),
                                                     actions: PostRenderViewModel(renderType: .actions(provider: "")),
@@ -81,6 +84,7 @@ class HomeViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        
       
         
     }
@@ -89,7 +93,9 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         handleNotAuthenticated()
+       // let user = SQLiteDatabase().readtest()
         
+        //print("am ajuns home",user.name)
     
     }
     private func handleNotAuthenticated(){
@@ -207,7 +213,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             case .comments(let comments):
                 let cell = tableView.dequeueReusableCell(withIdentifier: IGFeedPostGeneralTableViewCell.identifier,
                                                                 for: indexPath) as! IGFeedPostGeneralTableViewCell
-                cell.configure(with: comments)
+                cell.configure(with: comments[0])
                 return cell
             case .header, .actions, .primaryContent : return UITableViewCell()
             }

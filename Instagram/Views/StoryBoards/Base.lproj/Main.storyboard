@@ -91,7 +91,7 @@
         <scene sceneID="AuM-vC-gcJ">
             <objects>
                 <navigationController id="8Qg-Hy-pf6" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="magnifyingglass" catalog="system" id="xGh-a3-7RN"/>
+                    <tabBarItem key="tabBarItem" title="" image="video" catalog="system" id="xGh-a3-7RN"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="YY1-WF-hy6">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -205,9 +205,9 @@
     <resources>
         <image name="heart" catalog="system" width="128" height="109"/>
         <image name="house" catalog="system" width="128" height="106"/>
-        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="video" catalog="system" width="128" height="83"/>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
