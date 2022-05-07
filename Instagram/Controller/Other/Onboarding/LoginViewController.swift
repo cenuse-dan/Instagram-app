@@ -183,7 +183,10 @@ class LoginViewController: UIViewController {
                                  width: headerView.width/2.0,
                                  height: headerView.height - view.safeAreaInsets.top)
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        SQLiteDatabase().printAllUsers()
+    }
     
     private func addSubviews(){
         view.addSubview(usernameEmailField)

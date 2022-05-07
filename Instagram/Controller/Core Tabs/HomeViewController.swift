@@ -80,7 +80,7 @@ class HomeViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("piza")
+       // print("piza")
         tableView.reloadData()
     }
     

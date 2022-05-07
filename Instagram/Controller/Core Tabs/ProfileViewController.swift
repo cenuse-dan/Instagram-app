@@ -40,7 +40,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //retuser()
-        db.self.printAllUsers()
+        //db.self.printAllUsers()
         collectionView?.reloadData()
        // print(AuthManager.shared.curruser())
         //db.postcount()
